@@ -11,12 +11,15 @@ import facebook
 import config
 import html
 import re
+import sheets
 from datetime import datetime as dt
 
 # efree
 feed = feedparser.parse('http://www.efree.org/events/feed/')
 
 message = "Weekly Announcements\nPosted by Bot - Report issues in comments\n"
+
+message += sheets.yalt_schedule()
 
 for x in feed.entries:
     message += "\n" + x.title
@@ -35,3 +38,4 @@ group_id = [x for x in groups['data'] if x['name'] == "yalt-test"][0]['id']
 graph.put_wall_post(message = message, profile_id = group_id)
 
 print(message)
+
