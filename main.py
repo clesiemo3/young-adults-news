@@ -24,7 +24,7 @@ message += sheets.yalt_schedule()
 for x in feed.entries:
     message += "\n" + x.title
     message += "\n" + x.link
-    message += "\n" + dt.strptime(x.published, '%a, %d %b %Y %H:%M:%S %z').strftime('%A %B %d %H:%M %p')
+    message += "\n" + dt.strptime(x.published, '%a, %d %b %Y %H:%M:%S %z').strftime('%A %B %d %I:%M %p')
     summary = re.sub(r' <a href.+more.+$', '... [truncated]', x.summary)
     message += "\n" + summary + "\n"
 
