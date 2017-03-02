@@ -37,26 +37,35 @@ fb_mask = '%Y-%m-%dT%H:%M:%S%z'
 efree_mask = '%a, %d %b %Y %H:%M:%S %z'
 output_mask = '%A %B %d %I:%M %p'
 
-message += "\nYoung Adults Events\n"
-try:
-    for event in events['data']:
-        message += "\n" + event['name']
-        message += "\n" + url_stub + event['id'] + "/"
-        message += "\n" + dt.strptime(event['start_time'], fb_mask).strftime(output_mask) + \
-                                     " to " + dt.strptime(event['end_time'], fb_mask).strftime('%H:%M %p')
-        message += "\nLocation: " + event['place']['name']
-        message += "\n\n" + event['description']
-except Exception as e:
-    message += "\n    No Young Adults Events in the next 2 weeks."
-    print(e)
+if events['data'] != []:
+    message += "\nYoung Adults Events\n"
+    try:
+        for event in events['data']:
+            message += "\n" + event['name']
+            message += "\n" + url_stub + event['id'] + "/"
+            message += "\n" + dt.strptime(event['start_time'], fb_mask).strftime(output_mask) + \
+                                         " to " + dt.strptime(event['end_time'], fb_mask).strftime('%H:%M %p')
+            message += "\nLocation: " + event['place']['name']
+            message += "\n\n" + event['description']
+    except Exception as e:
+        print(e)
+else:
+    message += "\nNo Young Adult Facebook Events in the next 2 weeks\n"
 
 message += "\n\nEfree Events\n"
+exclude = re.compile("(Junior High|Senior High|KampOut)")
 for x in feed.entries:
-    message += "\n" + x.title
-    message += "\n" + x.link
-    message += "\n" + dt.strptime(x.published, efree_mask).strftime(output_mask)
+    msg_x = "\n" + x.title
+    msg_x += "\n" + x.link
+    msg_x += "\n" + dt.strptime(x.published, efree_mask).strftime(output_mask)
     summary = re.sub(r' <a href.+more.+$', '... [truncated]', x.summary)
-    message += "\n\n" + summary + "\n"
+    msg_x += "\n\n" + summary + "\n"
+    if exclude.search(msg_x):
+        print("Excluded!")
+        print(msg_x)
+        continue
+    else:
+        message += msg_x
 
 message = html.unescape(message)
 
