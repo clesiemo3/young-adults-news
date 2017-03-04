@@ -8,12 +8,14 @@ Created on Sun Feb 12 18:50:47 2017
 
 import feedparser
 import facebook
-import config
 import html
 import re
 import sheets
 import datetime as dttm
 from datetime import datetime as dt
+
+# py files
+import auth_flow
 
 # efree
 feed = feedparser.parse('http://www.efree.org/events/feed/')
@@ -23,7 +25,7 @@ message = "Weekly Announcements\nPosted by Bot - Report issues in comments\n"
 message += sheets.yalt_schedule()
 
 # facebook
-graph = facebook.GraphAPI(config.user_token)
+graph = facebook.GraphAPI(auth_flow.update_token())
 groups = graph.get_object("me/groups")
 group_id = [x for x in groups['data'] if x['name'] == "Young Adult's Ministry at First Free Church, Manchester, MO"][0]['id']
 now = dt.now()
@@ -69,6 +71,6 @@ for x in feed.entries:
 
 message = html.unescape(message)
 
-graph.put_wall_post(message = message, profile_id = group_id)
+# graph.put_wall_post(message = message, profile_id = group_id)
 print(message)
 

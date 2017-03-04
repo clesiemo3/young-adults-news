@@ -8,6 +8,6 @@ Created on Sun Feb 12 19:57:34 2017
 
 user_token = ""
 client_id = ""
-    client_secret = ""
+client_secret = ""
 sheets_id = ""
 
