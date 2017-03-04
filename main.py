@@ -71,6 +71,6 @@ for x in feed.entries:
 
 message = html.unescape(message)
 
-# graph.put_wall_post(message = message, profile_id = group_id)
+graph.put_wall_post(message = message, profile_id = group_id)
 print(message)
 
