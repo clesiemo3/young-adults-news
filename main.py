@@ -55,7 +55,7 @@ else:
     message += "\nNo Young Adult Facebook Events in the next 2 weeks\n"
 
 message += "\n\nEfree Events\n"
-exclude = re.compile("(Junior High|Senior High|KampOut)")
+exclude = re.compile("(Junior High Spring Retreat|Senior High|KampOut)")
 for x in feed.entries:
     msg_x = "\n" + x.title
     msg_x += "\n" + x.link
@@ -72,5 +72,5 @@ for x in feed.entries:
 message = html.unescape(message)
 
 graph.put_wall_post(message = message, profile_id = group_id)
-print(message)
+#print(message)
 

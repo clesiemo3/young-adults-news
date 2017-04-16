@@ -81,8 +81,17 @@ def yalt_schedule():
     else:
         message += 'Coming Sunday: %s\n' % values[0][0]
         message += 'Topic: %s\n' % values[0][1]
-        message += 'Announcements: %s\n' % values[0][2]
-        message += 'Prayer: %s\n' % values[0][3]
-        message += 'Teacher: %s\n' % values[0][4]
-        
+        try:
+            message += 'Announcements: %s\n' % values[0][2]
+        except Exception:
+            pass
+        try:
+            message += 'Prayer: %s\n' % values[0][3]
+        except Exception:
+            pass
+        try:        
+            message += 'Teacher: %s\n' % values[0][4]
+        except Exception:
+            pass
+    
     return(message)
