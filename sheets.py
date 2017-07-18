@@ -71,7 +71,7 @@ def yalt_schedule():
                               discoveryServiceUrl=discoveryUrl)
 
     spreadsheetId = config.sheets_id
-    rangeName = 'Sheet1!A2:E'
+    rangeName = 'Teaching Schedule!A2:E'
     result = service.spreadsheets().values().get(
         spreadsheetId=spreadsheetId, range=rangeName).execute()
     values = result.get('values', [])

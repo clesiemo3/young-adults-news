@@ -27,13 +27,13 @@ message += sheets.yalt_schedule()
 # facebook
 graph = facebook.GraphAPI(auth_flow.update_token())
 groups = graph.get_object("me/groups")
-group_id = [x for x in groups['data'] if x['name'] == "Young Adult's Ministry at First Free Church, Manchester, MO"][0]['id']
+group_id = '195603127146892' #[x for x in groups['data'] if x['name'] == "Young Adults @ First Free"][0]['id']
 now = dt.now()
-two_weeks = dttm.timedelta(days=14)
+two_weeks = dttm.timedelta(days=28)
 until = now + two_weeks
-events = graph.get_object("195603127146892/events", 
-                          since = now.strftime('%Y-%m-%d'), 
-                          until = until.strftime('%Y-%m-%d'))
+events = graph.get_object(group_id + "/events",
+                          since=now.strftime('%Y-%m-%d'),
+                          until=until.strftime('%Y-%m-%d'))
 url_stub = "https://www.facebook.com/events/"
 fb_mask = '%Y-%m-%dT%H:%M:%S%z'
 efree_mask = '%a, %d %b %Y %H:%M:%S %z'
@@ -52,7 +52,7 @@ if events['data'] != []:
     except Exception as e:
         print(e)
 else:
-    message += "\nNo Young Adult Facebook Events in the next 2 weeks\n"
+    message += "\nNo Young Adult Facebook Events in the next 4 weeks\n"
 
 message += "\n\nEfree Events\n"
 exclude = re.compile("(Junior High Spring Retreat|Senior High|KampOut)")
