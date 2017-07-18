@@ -17,6 +17,8 @@ from datetime import datetime as dt
 # py files
 import auth_flow
 
+graph = facebook.GraphAPI(auth_flow.update_token())
+
 # efree
 feed = feedparser.parse('http://www.efree.org/events/feed/')
 
@@ -25,7 +27,6 @@ message = "Weekly Announcements\nPosted by Bot - Report issues in comments\n"
 message += sheets.yalt_schedule()
 
 # facebook
-graph = facebook.GraphAPI(auth_flow.update_token())
 groups = graph.get_object("me/groups")
 group_id = '195603127146892' #[x for x in groups['data'] if x['name'] == "Young Adults @ First Free"][0]['id']
 now = dt.now()
