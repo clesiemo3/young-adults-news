@@ -17,6 +17,8 @@ from datetime import datetime as dt
 # py files
 import auth_flow
 
+sep = "########################################################"
+
 graph = facebook.GraphAPI(auth_flow.update_token())
 
 # efree
@@ -24,7 +26,7 @@ feed = feedparser.parse('http://www.efree.org/events/feed/')
 
 message = "Weekly Announcements\nPosted by Bot - Report issues in comments\n"
 
-message += sheets.yalt_schedule()
+message += sheets.yalt_schedule() + "\n" + sep + "\n" + sep + "\n"
 
 # facebook
 groups = graph.get_object("me/groups")
@@ -50,12 +52,13 @@ if events['data'] != []:
                                          " to " + dt.strptime(event['end_time'], fb_mask).strftime('%H:%M %p')
             message += "\nLocation: " + event['place']['name']
             message += "\n\n" + event['description']
+            message += "\n" + sep + "\n"
     except Exception as e:
         print(e)
 else:
     message += "\nNo Young Adult Facebook Events in the next 4 weeks\n"
 
-message += "\n\nEfree Events\n"
+message += "\n\nEfree Events\n" + sep +"\n" + sep + "\n"
 exclude = re.compile("(Junior High Spring Retreat|Senior High|KampOut)")
 for x in feed.entries:
     msg_x = "\n" + x.title
@@ -63,6 +66,7 @@ for x in feed.entries:
     msg_x += "\n" + dt.strptime(x.published, efree_mask).strftime(output_mask)
     summary = re.sub(r' <a href.+more.+$', '... [truncated]', x.summary)
     msg_x += "\n\n" + summary + "\n"
+    msg_x += "\n" + sep + "\n"
     if exclude.search(msg_x):
         print("Excluded!")
         print(msg_x)
