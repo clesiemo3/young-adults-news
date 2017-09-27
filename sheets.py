@@ -79,8 +79,12 @@ def yalt_schedule():
     if not values:
         message = '\nNo Schedule data from google sheets found.\n'
     else:
-        message += 'Coming Sunday: %s\n' % values[0][0]
-        message += 'Topic: %s\n' % values[0][1]
+        try:
+            message += 'Coming Sunday: %s\n' % values[0][0]
+            message += 'Topic: %s\n' % values[0][1]
+        except Exception:
+            message = '\nNo Schedule data from google sheets found.\n'
+            return(message) 
         try:
             message += 'Announcements: %s\n' % values[0][2]
         except Exception:
