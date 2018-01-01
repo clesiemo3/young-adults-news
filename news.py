@@ -32,8 +32,7 @@ def main():
     message += sheets.yalt_schedule() + "\n" + sep + "\n" + sep + "\n"
 
     # facebook
-    groups = graph.get_object("me/groups")
-    group_id = '195603127146892' #[x for x in groups['data'] if x['name'] == "Young Adults @ First Free"][0]['id']
+    group_id = os.environ['fb_group_id']
     now = dt.now()
     two_weeks = dttm.timedelta(days=28)
     until = now + two_weeks

@@ -9,6 +9,7 @@ Created on Wed Feb 15 20:33:26 2017
 import requests
 import json
 import os
+import pygsheets
 
 # initial token getter
 # https://www.facebook.com/v2.8/dialog/oauth?client_id=1642664639360405&redirect_uri=http://localhost&response_type=token&scope=user_managed_groups,publish_actions,user_events
@@ -28,13 +29,17 @@ def get_new_token(old_token):
 
 # refresh token
 def update_token():
-    with open('user_token.json', 'r') as ut_file:    
-        ut = json.load(ut_file)
-    
-    new_token = get_new_token(ut['user_token'])
-    ut['user_token'] = new_token
-    
-    with open('user_token.json', 'w') as ut_file:    
-        json.dump(ut, ut_file)
+    try:
+        gc = pygsheets.authorize(service_file='client_secret.json')
+    except FileNotFoundError:
+        with open('client_secret.json', 'w') as cs_file:
+            cs_file.write(os.environ['google_client_secret'])
+        gc = pygsheets.authorize(service_file='client_secret.json')
+
+    # because I'm not setting up an entire database for 1 token
+    ws = gc.open_by_key(os.environ['token_sheets_id']).worksheet_by_title('token')
+    new_token = get_new_token(ws.get_value('A2'))
+
+    ws.update_cell('A2', new_token)
     
     return new_token

@@ -16,6 +16,12 @@ def ya_schedule():
 
     try:
         gc = pygsheets.authorize(service_file='client_secret.json')
+    except FileNotFoundError:
+        with open('client_secret.json', 'w') as cs_file:
+            cs_file.write(os.environ['google_client_secret'])
+            gc = pygsheets.authorize(service_file='client_secret.json')
+
+    try:
         ws = gc.open_by_key(os.environ['sheets_id']).worksheet_by_title('Teaching Schedule')
         next_week = ws.get_values('A1', 'E2', include_all=True)
         # ugly dict comprehension to turn 1st list into keys
