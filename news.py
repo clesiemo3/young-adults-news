@@ -78,7 +78,7 @@ def main():
 
     message = html.unescape(message)
 
-    if os.environ['print_only']:
+    if eval(os.environ['print_only']):
         print(message)
     else:
         graph.put_wall_post(message=message, profile_id=group_id)
