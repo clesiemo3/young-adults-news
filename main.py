@@ -17,7 +17,7 @@ from datetime import datetime as dt
 # py files
 import auth_flow
 
-sep = "########################################################"
+sep = "##############################################"
 
 graph = facebook.GraphAPI(auth_flow.update_token())
 
