@@ -29,7 +29,7 @@ def main():
 
     message = "Weekly Announcements\nPosted by Bot - Report issues in comments\n"
 
-    message += sheets.yalt_schedule() + "\n" + sep + "\n" + sep + "\n"
+    message += sheets.ya_schedule() + "\n" + sep + "\n" + sep + "\n"
 
     # facebook
     group_id = os.environ['fb_group_id']
