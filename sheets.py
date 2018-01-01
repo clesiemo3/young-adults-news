@@ -6,96 +6,29 @@ Created on Sun Feb 12 20:11:05 2017
 @author: clesiemo3
 """
 
-import httplib2
 import os
-import config
-
-from apiclient import discovery
-from oauth2client import client
-from oauth2client import tools
-from oauth2client.file import Storage
-
-try:
-    import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-except ImportError:
-    flags = None
-
-# If modifying these scopes, delete your previously saved credentials
-# at ~/.credentials/sheets.googleapis.com-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'YALT Messaging'
+import pygsheets
 
 
-def get_credentials():
-    """Gets valid user credentials from storage.
+def ya_schedule():
+    message = '\n'
+    error_message = '\nError: Failed to find schedule data from google sheets.\n'
 
-    If nothing has been stored, or if the stored credentials are invalid,
-    the OAuth2 flow is completed to obtain the new credentials.
-
-    Returns:
-        Credentials, the obtained credential.
-    """
-    home_dir = os.path.expanduser('~')
-    credential_dir = os.path.join(home_dir, '.credentials')
-    if not os.path.exists(credential_dir):
-        os.makedirs(credential_dir)
-    credential_path = os.path.join(credential_dir,
-                                   'sheets.googleapis.com-yalt.json')
-
-    store = Storage(credential_path)
-    credentials = store.get()
-    if not credentials or credentials.invalid:
-        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
-        flow.user_agent = APPLICATION_NAME
-        if flags:
-            credentials = tools.run_flow(flow, store, flags)
-        else: # Needed only for compatibility with Python 2.6
-            credentials = tools.run(flow, store)
-        print('Storing credentials to ' + credential_path)
-    return credentials
-
-def yalt_schedule():
-    """Shows basic usage of the Sheets API.
-
-    Creates a Sheets API service object and prints the names and majors of
-    students in a sample spreadsheet:
-    https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-    """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                    'version=v4')
-    service = discovery.build('sheets', 'v4', http=http,
-                              discoveryServiceUrl=discoveryUrl)
-
-    spreadsheetId = config.sheets_id
-    rangeName = 'Teaching Schedule!A2:E'
-    result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=rangeName).execute()
-    values = result.get('values', [])
-    message = "\n"
-    if not values:
-        message = '\nNo Schedule data from google sheets found.\n'
-    else:
-        try:
-            message += 'Coming Sunday: %s\n' % values[0][0]
-            message += 'Topic: %s\n' % values[0][1]
-        except Exception:
-            message = '\nNo Schedule data from google sheets found.\n'
-            return(message) 
-        try:
-            message += 'Announcements: %s\n' % values[0][2]
-        except Exception:
-            pass
-        try:
-            message += 'Prayer: %s\n' % values[0][3]
-        except Exception:
-            pass
-        try:        
-            message += 'Teacher: %s\n' % values[0][4]
-        except Exception:
-            pass
+    try:
+        gc = pygsheets.authorize(service_file='client_secret.json')
+        ws = gc.open_by_key(os.environ['sheets_id']).worksheet_by_title('Teaching Schedule')
+        next_week = ws.get_values('A1', 'E2', include_all=True)
+        # ugly dict comprehension to turn 1st list into keys
+        nw_dict = {next_week[0][i]: next_week[1][i] for i in range(0, len(next_week[0]))}
+        for k, v in nw_dict.items():
+            if v == "":
+                continue
+            message += "%s: %s\n" % (k, v)
+    except KeyError as e:
+        print("KeyError: %s" % e)
+        message = error_message
+    except pygsheets.PyGsheetsException as e:
+        print("PyGsheetsException: %s" % e)
+        message = error_message
     
-    return(message)
+    return message
