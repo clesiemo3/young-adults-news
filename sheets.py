@@ -22,7 +22,7 @@ def ya_schedule():
             gc = pygsheets.authorize(service_file='client_secret.json')
 
     try:
-        ws = gc.open_by_key(os.environ['sheets_id']).worksheet_by_title('Teaching Schedule')
+        ws = gc.open_by_key(os.environ['schedule_sheets_id']).worksheet_by_title('Teaching Schedule')
         next_week = ws.get_values('A1', 'E2', include_all=True)
         # ugly dict comprehension to turn 1st list into keys
         nw_dict = {next_week[0][i]: next_week[1][i] for i in range(0, len(next_week[0]))}
