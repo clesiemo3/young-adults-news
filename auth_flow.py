@@ -29,6 +29,7 @@ def get_new_token(old_token):
 
 # refresh token
 def update_token():
+    print('Refreshing token...')
     try:
         gc = pygsheets.authorize(service_file='client_secret.json')
     except FileNotFoundError:
