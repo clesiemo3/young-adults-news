@@ -7,6 +7,6 @@ schedule = BlockingScheduler()
 schedule.add_job(auth_flow.update_token, trigger='cron', day_of_week='tue', hour=18)
 schedule.add_job(auth_flow.update_token, trigger='cron', day_of_week='thu', hour=18)
 schedule.add_job(auth_flow.update_token, trigger='cron', day_of_week='sat', hour=18)
-schedule.add_job(news.main, trigger='cron', day_of_week='fri', hour=19)
+schedule.add_job(news.main, trigger='cron', day_of_week='sat', hour=22)
 
 schedule.start()
