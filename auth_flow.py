@@ -23,7 +23,11 @@ def get_new_token(old_token):
               "fb_exchange_token": old_token}
 
     r = requests.get(url, params)
-    token = json.loads(r.text)["access_token"]
+    try:
+        token = json.loads(r.text)["access_token"]
+    except KeyError:
+        print(json.loads(r.text))
+        raise KeyError
     return token
 
 
