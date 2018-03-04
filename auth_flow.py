@@ -24,9 +24,12 @@ def get_new_token(old_token):
 
     r = requests.get(url, params)
     try:
-        token = json.loads(r.text)["access_token"]
+        resp = json.loads(r.text)
+        token = resp["access_token"]
+        expires = resp["expires_in"]
+        print("Token expires in {0} seconds ({1} days)".format(expires, round(expires/3600/24, 2)))
     except KeyError:
-        print(json.loads(r.text))
+        print(resp)
         raise KeyError
     return token
 
