@@ -32,7 +32,7 @@ def main():
 
     sermon = feedparser.parse("http://www.efree.org/sermons/feed/").entries[0]
     vimeo_link = re.findall(r"https://player.vimeo.com/video/[0-9]+", sermon['content'][0]['value'])[0]
-    sermon_string = "Last Week's Sermon - {0} - {1}\nLink: {2}\nVimeo: {3}\nmp3 download: {4}\n"
+    sermon_string = "Last Week's Sermon - {0} - {1}\nLink: {2}\nVimeo: {3}\nMP3 download: {4}\n"
     message += sermon_string.format(sermon.title, sermon.author, sermon.link, vimeo_link, sermon.links[1]['href'])
     message += "\n{sep}\n{sep}\n".format(sep=sep)
 
