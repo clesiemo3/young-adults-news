@@ -6,6 +6,7 @@ Created on Sun Feb 12 18:50:47 2017
 @author: clesiemo3
 """
 
+import feedparser
 import html2text
 import requests
 import facebook
@@ -27,7 +28,13 @@ def main():
 
     message = "Weekly Announcements\nPosted by Bot - Report issues in comments\n"
 
-    message += sheets.ya_schedule() + "\n" + sep + "\n" + sep + "\n"
+    message += sheets.ya_schedule() + "\n"
+
+    sermon = feedparser.parse("http://www.efree.org/sermons/feed/").entries[0]
+    vimeo_link = re.findall(r"https://player.vimeo.com/video/[0-9]+", sermon['content'][0]['value'])[0]
+    sermon_string = "Last Week's Sermon - {0} - {1}\nLink: {2}\nVimeo: {3}\nmp3 download: {4}\n"
+    message += sermon_string.format(sermon.title, sermon.author, sermon.link, vimeo_link, sermon.links[1]['href'])
+    message += "\n{sep}\n{sep}\n".format(sep=sep)
 
     # facebook
     group_id = os.environ['fb_group_id']
@@ -39,9 +46,7 @@ def main():
                               until=until.strftime('%Y-%m-%d'))
     url_stub = "https://www.facebook.com/events/"
     fb_mask = '%Y-%m-%dT%H:%M:%S%z'
-    # efree_mask = '%a, %d %b %Y %H:%M:%S %z'
     efree_mask = '%Y-%m-%d %H:%M:%S'
-#    start_date: "2018-04-01 00:00:00",
     output_mask = '%A %B %d %I:%M %p'
 
     if events['data']:
@@ -67,7 +72,7 @@ def main():
     exclude = re.compile("(Junior High Spring Retreat|Senior High|KampOut)")
 
     # efree
-    # feed = feedparser.parse('http://www.efree.org/events/feed/')
+
     efree_events = "http://www.efree.org/wp-json/tribe/events/v1/events"
     query_params = {"start_date": now.strftime(efree_mask),  # "2018-04-01 00:00:00",
                     "end_date": until.strftime(efree_mask),  # "2018-05-01 00:00:00",
@@ -93,6 +98,7 @@ def main():
         # summary = re.sub(r' <a href.+more.+$', '... [truncated]', x.summary)
         msg_x += h.handle(x.get("description", ""))
         msg_x += sep + "\n"
+
         if exclude.search(msg_x):
             print("Excluded!")
             print(msg_x)
