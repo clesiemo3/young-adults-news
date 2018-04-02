@@ -87,7 +87,6 @@ def main():
     h.ignore_emphasis = True
 
     for x in events.json()['events']:
-        print(x)
         msg_x = "\n" + x.get("title", "Event Name")
         msg_x += "\n" + x.get("url", "")
         start_date = dt.strptime(x.get("start_date", now), efree_mask)
