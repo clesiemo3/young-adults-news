@@ -11,8 +11,8 @@ import pygsheets
 
 
 def ya_schedule():
-    message = '\n'
-    error_message = '\nError: Failed to find schedule data from google sheets.\n'
+    message = '<br>'
+    error_message = '<br> Error: Failed to find schedule data from google sheets. <br>'
 
     try:
         gc = pygsheets.authorize(service_file='client_secret.json')
@@ -29,7 +29,7 @@ def ya_schedule():
         for k, v in nw_dict.items():
             if v == "":
                 continue
-            message += "%s: %s\n" % (k, v)
+            message += "%s: %s <br>" % (k, v)
     except KeyError as e:
         print("KeyError: %s" % e)
         message = error_message

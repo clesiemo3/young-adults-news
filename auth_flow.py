@@ -16,7 +16,7 @@ import pygsheets
 
 
 def get_new_token(old_token):
-    url = "https://graph.facebook.com/%s/oauth/access_token?" % os.environ['fb_api_version']
+    url = "https://graph.facebook.com/v%s/oauth/access_token?" % os.environ['fb_api_version']
     params = {"grant_type": "fb_exchange_token",
               "client_id": os.environ['fb_client_id'],
               "client_secret": os.environ['fb_client_secret'],
