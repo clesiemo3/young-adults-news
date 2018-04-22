@@ -19,7 +19,7 @@ def ya_schedule():
     except FileNotFoundError:
         with open('client_secret.json', 'w') as cs_file:
             cs_file.write(os.environ['google_client_secret'])
-            gc = pygsheets.authorize(service_file='client_secret.json')
+        gc = pygsheets.authorize(service_file='client_secret.json')
 
     try:
         ws = gc.open_by_key(os.environ['schedule_sheets_id']).worksheet_by_title('Teaching Schedule')
