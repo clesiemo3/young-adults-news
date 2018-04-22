@@ -100,3 +100,6 @@ def main():
         print(response.status_code)
         print(response.body)
         print(response.headers)
+
+if __name__ == '__main__':
+    main()
