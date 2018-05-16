@@ -102,5 +102,4 @@ def main():
         print(response.headers)
 
 if __name__ == '__main__':
-    if dttm.date.today().isoweekday() == 3:
-        main()
+    main()
