@@ -51,37 +51,30 @@ def main():
 
     # efree
 
-    efree_events = "http://www.efree.org/wp-json/tribe/events/v1/events"
-    query_params = {"start_date": now.strftime(efree_mask),  # "2018-04-01 00:00:00",
-                    "end_date": until.strftime(efree_mask),  # "2018-05-01 00:00:00",
-                    "status": "publish"}
+    efree_events = "http://www.efree.org/wp-json/wp/v2/posts/"
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
     }
 
-    events = requests.get(efree_events, params=query_params, headers=headers)
+    events = requests.get(efree_events, headers=headers)
     h = html2text.HTML2Text()
     h.ignore_links = True
     h.ignore_emphasis = True
 
-    for x in events.json()['events']:
-        msg_x = "<br>" + x.get("title", "Event Name")
-        msg_x += "<br>" + x.get("url", "")
-        start_date = dt.strptime(x.get("start_date", now), efree_mask)
-        if x.get("all_day", False):
-            msg_x += "<br>" + start_date.strftime("%A %B %d")
-        else:
-            msg_x += "<br>" + start_date.strftime(output_mask)
-        # summary = re.sub(r' <a href.+more.+$', '... [truncated]', x.summary)
-        msg_x += h.handle(x.get("description", ""))
-        msg_x += "<br>" + sep + "<br>"
+    for x in events.json():
+        # event category number
+        if 35 in x.get("categories"):
+            msg_x = "<br>" + x.get("title", {}).get("rendered", "Event Name")
+            msg_x += "<br>" + x.get("link", "")
+            msg_x += h.handle(x.get("excerpt", {}).get("rendered", ""))
+            msg_x += "<br>" + sep + "<br>"
 
-        if exclude.search(msg_x):
-            print("Excluded!")
-            print(msg_x)
-            continue
-        else:
-            message += msg_x
+            if exclude.search(msg_x):
+                print("Excluded!")
+                print(msg_x)
+                continue
+            else:
+                message += msg_x
 
     message = html.unescape(message)
 
